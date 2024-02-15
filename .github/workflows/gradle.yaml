@@ -1,9 +1,6 @@
 name: snugo-server CI/CD
 
 on:
-  pull_request:
-    branches:
-      - 'main'
   push:
     branches:
       - 'main'
