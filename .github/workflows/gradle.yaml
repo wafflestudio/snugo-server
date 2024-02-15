@@ -1,17 +1,29 @@
 name: snugo-server CI/CD
 
 on:
+  pull_request:
+    branches:
+      - 'main'
   push:
-    branches: [ "main" ]
+    branches:
+      - 'main'
 
 permissions:
   contents: read
 
 jobs:
+  cancel-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
   build:
     runs-on: ubuntu-latest
 
-  steps:
+    steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
       with:
