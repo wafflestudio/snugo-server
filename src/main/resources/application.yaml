@@ -27,12 +27,7 @@ spring:
     active: local
   data:
     mongodb:
-      username: test
-      password: test
-      authentication-database: admin
-      database: snugo
-      port: 27017
-      host: localhost
+      uri: mongodb://localhost:27017/snugo
 logging:
   level:
     root: debug
@@ -42,11 +37,3 @@ jwt:
 spring:
   profiles:
     active: prod
-  data:
-    mongodb:
-      username: test
-      password: test
-      authentication-database: admin
-      database: snugo
-      port: 27017
-      host: snugo-mongo.wafflestudio.com
