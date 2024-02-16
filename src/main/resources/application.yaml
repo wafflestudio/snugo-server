@@ -1,42 +1,12 @@
 spring:
-  profiles:
-    active: local
-  mvc:
-    log-request-details: true
-
-logging:
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
-
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-    s3:
-      bucket: snugo-server
-
----
-spring:
-  profiles:
-    active: local
   data:
     mongodb:
       uri: mongodb://localhost:27017/snugo
+  mvc:
+    log-request-details: true
 logging:
   level:
     root: debug
+
 jwt:
   secret: secret000000000000000000000000
----
-spring:
-  profiles:
-    active: prod
-  data:
-    mongodb:
-      uri: mongodb://snugo-mongo.wafflestudio.com:27017/snugo
