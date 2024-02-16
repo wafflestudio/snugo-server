@@ -32,7 +32,7 @@ logging:
   level:
     root: debug
 jwt:
-  secret: secret000000000000000000000000
+  secret: 0000000000000000000000000000000000
 ---
 spring:
   profiles:
