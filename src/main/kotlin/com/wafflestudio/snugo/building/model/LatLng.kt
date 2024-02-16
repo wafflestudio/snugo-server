@@ -1,4 +1,4 @@
-package com.wafflestudio.snugo.location.model
+package com.wafflestudio.snugo.building.model
 
 data class LatLng(
 	val lat: Double,
