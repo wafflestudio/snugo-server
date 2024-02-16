@@ -27,7 +27,12 @@ spring:
     active: local
   data:
     mongodb:
-      uri: mongodb://localhost:27017/snugo
+      username: test
+      password: test
+      authentication-database: admin
+      database: snugo
+      port: 27017
+      host: localhost
 logging:
   level:
     root: debug
