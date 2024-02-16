@@ -37,6 +37,3 @@ jwt:
 spring:
   profiles:
     active: prod
-  data:
-    mongodb:
-      uri: mongodb://snugo-mongo.wafflestudio.com:27017/snugo
