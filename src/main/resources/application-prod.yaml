@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    mongodb:
+      uri: mongodb://snugo-mongo.wafflestudio.com/snugo
+jwt:
+  secret: 000000000000000000000000000000000

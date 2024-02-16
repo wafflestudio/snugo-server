@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: local
+  config:
+    import: classpath:application-prod.yaml
   mvc:
     log-request-details: true
 
@@ -34,13 +36,3 @@ logging:
     root: debug
 jwt:
   secret: 0000000000000000000000000000000000
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-  data:
-    mongodb:
-      uri: mongodb://snugo-mongo.wafflestudio.com/snugo
-jwt:
-  secret: 000000000000000000000000000000000

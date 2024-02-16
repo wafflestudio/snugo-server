@@ -25,7 +25,7 @@ jobs:
       - name: Set prod yaml
         uses: microsoft/variable-substitution@v1
         with:
-          files: ./src/main/resources/application.yaml
+          files: ./src/main/resources/application-prod.yaml
         env:
           spring.profiles.active: prod
           spring.data.mongodb.uri: ${{ secrets.DB_URI }}
