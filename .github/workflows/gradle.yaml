@@ -37,7 +37,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      IMAGE-TAG: ${{ github.run_number }}
+      IMAGE_TAG: ${{ github.run_number }}
       ECR_REPOSITORY: snugo/snugo-server
     steps:
       - name: Configure AWS credentials
