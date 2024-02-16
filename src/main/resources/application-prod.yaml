@@ -6,4 +6,4 @@ spring:
     mongodb:
       uri: mongodb://snugo-mongo.wafflestudio.com/snugo
 jwt:
-  secret: 000000000000000000000000000000000
+  secret: secret000000000000000000000000000000
