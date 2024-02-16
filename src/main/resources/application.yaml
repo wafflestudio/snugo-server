@@ -37,3 +37,11 @@ jwt:
 spring:
   profiles:
     active: prod
+  data:
+    mongodb:
+      username: test
+      password: test
+      authentication-database: admin
+      database: snugo
+      port: 27017
+      host: snugo-mongo.wafflestudio.com
