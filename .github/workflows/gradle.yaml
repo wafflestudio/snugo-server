@@ -22,16 +22,18 @@ jobs:
           distribution: 'temurin'
       - name: Run chmod to make gradlew executable
         run: chmod +x ./gradlew
-      - uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
-        with:
-          arguments: build -x test
       - name: Set prod yaml
         uses: microsoft/variable-substitution@v1
         with:
           files: ./src/main/resources/application.yaml
         env:
+          spring.profiles.active: prod
           spring.data.mongodb.uri: ${{ secrets.DB_URI }}
           jwt.secret: ${{ secrets.JWT_SECRET }}
+      - uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25
+        with:
+          arguments: build -x test
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
