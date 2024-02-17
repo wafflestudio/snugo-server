@@ -3,6 +3,8 @@ package com.wafflestudio.snugo.building.controller
 import com.wafflestudio.snugo.building.model.Building
 import com.wafflestudio.snugo.building.model.BuildingSection
 import com.wafflestudio.snugo.building.repository.BuildingRepository
+import com.wafflestudio.snugo.common.error.BusinessException
+import com.wafflestudio.snugo.common.error.ErrorType
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -22,7 +24,7 @@ class BuildingController(
 
 	@GetMapping("/v1/buildings/{buildingId}")
 	fun getBuildingById(@PathVariable buildingId: String):Building {
-		return buildingRepository.findById(buildingId).orElseThrow { RuntimeException() }
+		return buildingRepository.findById(buildingId).orElseThrow { BusinessException(ErrorType.BUILDING_ID_NOT_FOUND) }
 	}
 
 	@PostMapping("/v1/buildings/insert")
