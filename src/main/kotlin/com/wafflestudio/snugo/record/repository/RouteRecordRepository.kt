@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface RouteRecordRepository : MongoRepository<RouteRecord, String> {
-	fun findByUserId(uid: String, pageable: Pageable): Page<RouteRecord>
-	fun findByRouteType(routeType: RouteType, pageable: Pageable): Page<RouteRecord>
-	fun findByRouteTypeOrderByDurationAsc(routeType: RouteType): List<RouteRecord>
+	fun findAllByUserId(uid: String, pageable: Pageable): Page<RouteRecord>
+	fun findAllByRouteType(routeType: RouteType, pageable: Pageable): Page<RouteRecord>
+	fun findAllByRouteTypeOrderByDurationAsc(routeType: RouteType): List<RouteRecord>
 	override fun findAll(pageable: Pageable): Page<RouteRecord>
 	fun findFirstByRouteTypeOrderByDurationAsc(routeType: RouteType): RouteRecord?
-	fun findByHigh(high: Boolean, pageable: Pageable): Page<RouteRecord>
+	fun findAllByHigh(high: Boolean, pageable: Pageable): Page<RouteRecord>
 }
