@@ -12,4 +12,6 @@ data class RouteType(
 	@Indexed(unique = true)
 	val buildings: List<Building>,
 	var count: Long = 0,
+	var avgPathLength: Double,
+	var avgTime: Double,
 )
