@@ -11,5 +11,5 @@ data class RouteType(
 	val id: String? = null,
 	@Indexed(unique = true)
 	val buildings: List<Building>,
-	val count: Long = 0
+	var count: Long = 0
 )

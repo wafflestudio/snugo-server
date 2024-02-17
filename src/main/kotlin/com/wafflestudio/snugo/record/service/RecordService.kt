@@ -27,6 +27,8 @@ class RecordService(
 				?: routeTypeRepository.save(
 					RouteType(buildings = buildingList, count = 0)
 				)
+		routeType.count += 1
+		routeTypeRepository.save(routeType)
 		routeRecordRepository.save(
 			RouteRecord(
 				nickname = authUserInfo.nickname,
