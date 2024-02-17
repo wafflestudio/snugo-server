@@ -33,7 +33,7 @@ class RouteTypeService(
 				} else {
 					null
 				}
-			}.sortedByDescending { it.count }.subList(0, Math.min(10, allRouteType.size)),
+			}.sortedByDescending { it.count }.subList(0, Math.min(9, allRouteType.size - 1)),
 			hasNext = false,
 			total_count = allRouteType.size.toLong()
 		)

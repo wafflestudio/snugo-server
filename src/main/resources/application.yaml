@@ -30,9 +30,9 @@ spring:
       on-profile: local
   data:
     mongodb:
-      uri: mongodb://localhost:27017/snugo
+      uri: mongodb://snugo:snugo@snugo-mongo.wafflestudio.com/snugo
 logging:
   level:
     root: debug
 jwt:
-  secret: secret000000000000000000000000000000
+  secret: jwtsecretsnugo101010101010101010101010

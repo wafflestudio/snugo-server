@@ -27,7 +27,7 @@ class RecordService(
 	fun getMyRecordList(uid: String, page: Int, size: Int): RecordPageResponse {
 		val pageResult = routeRecordRepository.findAllByUserId(uid, PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
 		return RecordPageResponse(
-			result = pageResult.content,
+			result = pageResult.content.map { toRecordDto(it) },
 			hasNext = pageResult.hasNext(),
 			total_count = pageResult.totalElements
 		)
@@ -36,42 +36,42 @@ class RecordService(
 	fun getRecentRecordList(page: Int, size: Int): RecordPageResponse {
 		val pageResult = routeRecordRepository.findAll(PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
 		return RecordPageResponse(
-			result = pageResult.content,
+			result = pageResult.content.map { toRecordDto(it) },
 			hasNext = pageResult.hasNext(),
 			total_count = pageResult.totalElements
 		)
 	}
 
 	fun getRecentWithRouteId(routeTypeId: String, page: Int, size: Int): RecordPageResponse {
-		val routeType = routeTypeRepository.findById(routeTypeId).getOrNull()
-		val pageResult = routeRecordRepository.findAllByRouteType(
-			routeType ?: throw BusinessException(ErrorType.ROUTE_TYPE_ID_NOT_FOUND),
+		val routeType = routeTypeRepository.findById(routeTypeId).get()
+		val pageResult = routeRecordRepository.findAllByRouteTypeId(
+			routeType.id!!,
 			PageRequest.of(page, size, Sort.Direction.DESC, "startTime")
 		)
 		return RecordPageResponse(
-			result = pageResult.content,
+			result = pageResult.content.map { toRecordDto(it) },
 			hasNext = pageResult.hasNext(),
 			total_count = pageResult.totalElements
 		)
 	}
 
 	fun getTopWithRouteId(routeTypeId: String, page: Int, size: Int): RecordPageResponse {
-		val routeType = routeTypeRepository.findById(routeTypeId).getOrNull()
-		val pageResult = routeRecordRepository.findAllByRouteType(
-			routeType ?: throw BusinessException(ErrorType.ROUTE_TYPE_ID_NOT_FOUND),
+		val routeType = routeTypeRepository.findById(routeTypeId).get()
+		val pageResult = routeRecordRepository.findAllByRouteTypeId(
+			routeType.id ?: throw BusinessException(ErrorType.ROUTE_TYPE_ID_NOT_FOUND),
 			PageRequest.of(page, size, Sort.Direction.ASC, "duration")
 		)
 		return RecordPageResponse(
-			result = pageResult.content,
+			result = pageResult.content.map { toRecordDto(it) },
 			hasNext = pageResult.hasNext(),
 			total_count = pageResult.totalElements
 		)
 	}
 
 	fun getUpdatedHighScoreList(page: Int, size: Int): RecordPageResponse {
-		val pageResult = routeRecordRepository.findAllByHigh(true, PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
+		val pageResult = routeRecordRepository.findAllByHighscoreyn(true, PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
 		return RecordPageResponse(
-			result = pageResult.content,
+			result = pageResult.content.map { toRecordDto(it) },
 			hasNext = pageResult.hasNext(),
 			total_count = pageResult.totalElements
 		)
@@ -79,7 +79,7 @@ class RecordService(
 
 	fun getMyRank(id: String, userId: String): RankResponse {
 		val routeType = routeTypeRepository.findById(id).getOrNull()
-		val allRecords = routeRecordRepository.findAllByRouteTypeOrderByDurationAsc(routeType!!)
+		val allRecords = routeRecordRepository.findAllByRouteTypeId(routeType!!.id!!)
 		for (i in 0L..allRecords.size - 1L) {
 			if (allRecords.get(i.toInt()).userId == userId) return RankResponse(myRank = i + 1, total = allRecords.size.toLong())
 		}
@@ -113,29 +113,42 @@ class RecordService(
 		routeType.avgTime = totalTime / routeType.count.toDouble()
 		routeType.avgPathLength = totalPathLength / routeType.count.toDouble()
 		routeTypeRepository.save(routeType)
-		val topsOfRouteType = routeRecordRepository.findAllByRouteType(routeType)
 		var flg = false
-		logger.warn(topsOfRouteType.toString())
-		routeRecordRepository.saveAll(topsOfRouteType.map {
-			if (it.duration > route.duration) {
-				it.high = false
-			} else {
-				flg = true
-			}
-			it
-		})
-		if (topsOfRouteType.isEmpty()) flg = true
-		logger.warn(topsOfRouteType.toString())
+		val topOfRouteType = routeRecordRepository.findByRouteTypeIdAndHighscoreyn(routeType.id!!, true)
+		logger.warn(topOfRouteType.toString())
 		routeRecordRepository.save(
 			RouteRecord(
 				nickname = authUserInfo.nickname,
 				userId = authUserInfo.uid,
 				duration = route.duration,
 				path = route.path.map { it.key.toLong() to it.value }.toMap(),
-				routeType = routeType,
+				routeTypeId = routeType.id,
 				startTime = route.startTime,
-				high = flg
+				highscoreyn = if (topOfRouteType == null) {
+					true
+				} else if (topOfRouteType.duration > route.duration) {
+					topOfRouteType.highscoreyn = false
+					true
+				} else {
+					false
+				}
 			)
+		)
+		if ((topOfRouteType != null) and (topOfRouteType!!.duration > route.duration)) {
+			topOfRouteType.highscoreyn = false
+			routeRecordRepository.save(topOfRouteType)
+		}
+	}
+
+	fun toRecordDto(record: RouteRecord): RecordDto {
+		return RecordDto(
+			duration = record.duration,
+			userId = record.userId,
+			nickname = record.nickname,
+			routeType = routeTypeRepository.findById(record.routeTypeId).get(),
+			highscoreyn = record.highscoreyn,
+			path = record.path,
+			startTime = record.startTime
 		)
 	}
 }
