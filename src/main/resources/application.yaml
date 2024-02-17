@@ -30,7 +30,7 @@ spring:
       on-profile: local
   data:
     mongodb:
-      uri: mongodb://snugo:snugo@snugo-mongo.wafflestudio.com/snugo
+      uri: mongodb://localhost:27017/snugo
 logging:
   level:
     root: debug
