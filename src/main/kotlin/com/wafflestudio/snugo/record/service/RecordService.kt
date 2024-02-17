@@ -81,11 +81,13 @@ class RecordService(
 		val routeType: RouteType =
 			routeTypeRepository.findByBuildings(buildingList)
 				?: routeTypeRepository.save(
-					RouteType(buildings = buildingList, count = 0, pathLength = geoUtil.getDistance(buildingList.first().location!!, buildingList.last().location!!), avgTime = 0.0)
+					RouteType(buildings = buildingList, count = 0, avgPathLength = 0.0, avgTime = 0.0)
 				)
 		val totalTime: Double = route.duration + routeType.count * routeType.avgTime
+		val totalPathLength = geoUtil.getPathLength(route.path) + routeType.avgPathLength * routeType.count
 		routeType.count += 1
 		routeType.avgTime = totalTime / routeType.count.toDouble()
+		routeType.avgPathLength = totalPathLength / routeType.count.toDouble()
 		routeTypeRepository.save(routeType)
 		val topOfRouteType = routeRecordRepository.findFirstByRouteTypeOrderByDurationAsc(routeType)
 		routeRecordRepository.save(

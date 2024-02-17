@@ -18,4 +18,6 @@ class RouteTypeService(
 			total_count = pageResult.totalElements
 		)
 	}
+
+	// fun getByOrderByAvgPathLength
 }

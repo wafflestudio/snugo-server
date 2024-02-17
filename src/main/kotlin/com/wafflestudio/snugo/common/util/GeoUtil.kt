@@ -17,4 +17,12 @@ class GeoUtil {
 		val dy = abs(lat1Rad - lat2Rad) * EARTH_RADIUS
 		return Math.sqrt(dx * dx + dy * dy)
 	}
+
+	fun getPathLength(path: Map<String, LatLng>): Double {
+		var res = 0.0
+		for (i in 1..path.size - 1) {
+			res += getDistance(path.values.toList().get(i - 1), path.values.toList().get(i))
+		}
+		return res
+	}
 }
