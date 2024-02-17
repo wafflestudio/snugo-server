@@ -134,9 +134,11 @@ class RecordService(
 				}
 			)
 		)
-		if ((topOfRouteType != null) and (topOfRouteType!!.duration > route.duration)) {
-			topOfRouteType.highscoreyn = false
-			routeRecordRepository.save(topOfRouteType)
+		if (topOfRouteType != null) {
+			if (topOfRouteType.duration > route.duration) {
+				topOfRouteType.highscoreyn = false
+				routeRecordRepository.save(topOfRouteType)
+			}
 		}
 	}
 
