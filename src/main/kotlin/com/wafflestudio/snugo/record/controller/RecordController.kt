@@ -28,4 +28,10 @@ class RecordController(
 		//TODO
 		return RouteRecordListResponse(listOf())
 	}
+
+	@GetMapping("/recommend")
+	fun getRecommendedRecordList(@AuthenticationPrincipal authUserInfo: AuthUserInfo): RouteRecordListResponse {
+		//TODO
+		return RouteRecordListResponse(listOf())
+	}
 }
