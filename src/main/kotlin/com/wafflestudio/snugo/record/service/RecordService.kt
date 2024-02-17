@@ -82,6 +82,20 @@ class RecordService(
 		return RankResponse(0, allRecords.size.toLong())
 	}
 
+	fun getMyRankForAll(userId: String): Double {
+		val allRouteType = routeTypeRepository.findAll()
+		var recordCount = 0
+		var totalPercentage = 0.0
+		allRouteType.forEach {
+			val currentRankResponse = getMyRank(it.id!!, userId)
+			if (currentRankResponse.myRank > 0) {
+				recordCount += 1
+				totalPercentage += (currentRankResponse.myRank - 1).toDouble() / currentRankResponse.total.toDouble()
+			}
+		}
+		return totalPercentage / recordCount.toDouble()
+	}
+
 	fun uploadRecord(authUserInfo: AuthUserInfo, route: Route) {
 		val buildingList = route.buildings.mapNotNull { buildingRepository.findById(it).getOrNull() }
 		val routeType: RouteType =

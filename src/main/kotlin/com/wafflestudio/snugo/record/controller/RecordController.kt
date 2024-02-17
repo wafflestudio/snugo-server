@@ -72,4 +72,11 @@ class RecordController(
 	): RankResponse {
 		return recordService.getMyRank(id, authUserInfo.uid)
 	}
+
+	@GetMapping("/myrank")
+	fun getMyRankForAll(
+		@AuthenticationPrincipal authUserInfo: AuthUserInfo,
+	): Double {
+		return recordService.getMyRankForAll(authUserInfo.uid)
+	}
 }
