@@ -2,6 +2,8 @@ package com.wafflestudio.snugo.record.service
 
 import com.wafflestudio.snugo.building.repository.BuildingRepository
 import com.wafflestudio.snugo.common.auth.model.AuthUserInfo
+import com.wafflestudio.snugo.common.error.BusinessException
+import com.wafflestudio.snugo.common.error.ErrorType
 import com.wafflestudio.snugo.record.model.RecordPageResponse
 import com.wafflestudio.snugo.record.model.Route
 import com.wafflestudio.snugo.record.model.RouteRecord
@@ -40,7 +42,7 @@ class RecordService(
 	fun getRecentWithRouteId(routeTypeId: String, page: Int, size: Int): RecordPageResponse {
 		val routeType = routeTypeRepository.findById(routeTypeId).getOrNull()
 		val pageResult = routeRecordRepository.findByRouteType(
-			routeType ?: RouteTypeNotFoundException,
+			routeType ?: throw BusinessException(ErrorType.ROUTE_TYPE_ID_NOT_FOUND),
 			PageRequest.of(page, size, Sort.Direction.DESC, "startTime")
 		)
 		return RecordPageResponse(
@@ -53,7 +55,7 @@ class RecordService(
 	fun getFastestWithRouteId(routeTypeId: String, page: Int, size: Int): RecordPageResponse {
 		val routeType = routeTypeRepository.findById(routeTypeId).getOrNull()
 		val pageResult = routeRecordRepository.findByRouteType(
-			routeType ?: RouteTypeNotFoundException,
+			routeType ?: throw BusinessException(ErrorType.ROUTE_TYPE_ID_NOT_FOUND),
 			PageRequest.of(page, size, Sort.Direction.ASC, "duration")
 		)
 		return RecordPageResponse(
