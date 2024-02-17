@@ -8,6 +8,8 @@ import com.wafflestudio.snugo.common.util.GeoUtil
 import com.wafflestudio.snugo.record.model.*
 import com.wafflestudio.snugo.record.repository.RouteRecordRepository
 import com.wafflestudio.snugo.record.repository.RouteTypeRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
@@ -18,8 +20,10 @@ class RecordService(
 	private val routeRecordRepository: RouteRecordRepository,
 	private val routeTypeRepository: RouteTypeRepository,
 	private val buildingRepository: BuildingRepository,
-	private val geoUtil: GeoUtil
+	private val geoUtil: GeoUtil,
 ) {
+	private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
+
 	fun getMyRecordList(uid: String, page: Int, size: Int): RecordPageResponse {
 		val pageResult = routeRecordRepository.findAllByUserId(uid, PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
 		return RecordPageResponse(
@@ -111,6 +115,7 @@ class RecordService(
 		routeTypeRepository.save(routeType)
 		val topsOfRouteType = routeRecordRepository.findAllByHighAndRouteType(true, routeType)
 		var flg = false
+		logger.warn(topsOfRouteType.toString())
 		routeRecordRepository.saveAll(topsOfRouteType.map {
 			if (it.duration > route.duration) {
 				it.high = false
@@ -120,6 +125,7 @@ class RecordService(
 			it
 		})
 		if (topsOfRouteType.isEmpty()) flg = true
+		logger.warn(topsOfRouteType.toString())
 		routeRecordRepository.save(
 			RouteRecord(
 				nickname = authUserInfo.nickname,
