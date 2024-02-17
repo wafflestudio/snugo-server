@@ -1,6 +1,7 @@
 package com.wafflestudio.snugo.record.controller
 
 import com.wafflestudio.snugo.common.auth.model.AuthUserInfo
+import com.wafflestudio.snugo.record.model.RankResponse
 import com.wafflestudio.snugo.record.model.RecordPageResponse
 import com.wafflestudio.snugo.record.model.RouteUploadRequest
 import com.wafflestudio.snugo.record.service.RecordService
@@ -62,5 +63,13 @@ class RecordController(
 		@RequestParam size: Int,
 	): RecordPageResponse {
 		return recordService.getRecentWithRouteId(id, page, size)
+	}
+
+	@GetMapping("/myrank/{id}")
+	fun getMyRankForRouteType(
+		@AuthenticationPrincipal authUserInfo: AuthUserInfo,
+		@PathVariable id: String,
+	): RankResponse {
+		return recordService.getMyRank(id, authUserInfo.uid)
 	}
 }
