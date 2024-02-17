@@ -8,5 +8,6 @@ data class Building(
 	@Id
 	val id: String,
 	val name: String,
-	val location: LatLng
+	val location: LatLng,
+	val section: BuildingSection
 )
