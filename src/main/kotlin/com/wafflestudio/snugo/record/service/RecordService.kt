@@ -118,7 +118,9 @@ class RecordService(
 				path = route.path.map { it.key.toLong() to it.value }.toMap(),
 				routeType = routeType,
 				startTime = route.startTime,
-				high = if (topOfRouteType.duration > route.duration) {
+				high = if (topOfRouteType == null) {
+					true
+				} else if (topOfRouteType.duration > route.duration) {
 					topOfRouteType.high = false
 					routeRecordRepository.save(topOfRouteType)
 					true
