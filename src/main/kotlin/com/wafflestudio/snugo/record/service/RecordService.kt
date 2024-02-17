@@ -113,7 +113,7 @@ class RecordService(
 		routeType.avgTime = totalTime / routeType.count.toDouble()
 		routeType.avgPathLength = totalPathLength / routeType.count.toDouble()
 		routeTypeRepository.save(routeType)
-		val topsOfRouteType = routeRecordRepository.findAllByHighAndRouteType(true, routeType)
+		val topsOfRouteType = routeRecordRepository.findAllByRouteType(routeType)
 		var flg = false
 		logger.warn(topsOfRouteType.toString())
 		routeRecordRepository.saveAll(topsOfRouteType.map {

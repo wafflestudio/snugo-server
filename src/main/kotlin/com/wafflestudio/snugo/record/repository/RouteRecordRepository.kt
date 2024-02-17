@@ -12,6 +12,6 @@ interface RouteRecordRepository : MongoRepository<RouteRecord, String> {
 	fun findAllByRouteTypeOrderByDurationAsc(routeType: RouteType): List<RouteRecord>
 	override fun findAll(pageable: Pageable): Page<RouteRecord>
 	fun findFirstByRouteTypeOrderByDurationAsc(routeType: RouteType): RouteRecord?
-	fun findAllByHighAndRouteType(high: Boolean, routeType: RouteType): List<RouteRecord>
+	fun findAllByRouteType(routeType: RouteType): List<RouteRecord>
 	fun findAllByHigh(high: Boolean, pageable: Pageable): Page<RouteRecord>
 }
