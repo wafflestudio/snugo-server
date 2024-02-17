@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class RouteRecord(
 	@Id
 	val id: String? = null,
-	val uid: String,
+	val userId: String,
 	val nickname: String,
 	val routeType: RouteType,
 	val path: Map<Long, LatLng>, // 타임스탬프 + 위경도

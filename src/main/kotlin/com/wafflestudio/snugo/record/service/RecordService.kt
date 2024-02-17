@@ -4,6 +4,7 @@ import com.wafflestudio.snugo.building.repository.BuildingRepository
 import com.wafflestudio.snugo.common.auth.model.AuthUserInfo
 import com.wafflestudio.snugo.common.error.BusinessException
 import com.wafflestudio.snugo.common.error.ErrorType
+import com.wafflestudio.snugo.common.util.GeoUtil
 import com.wafflestudio.snugo.record.model.RecordPageResponse
 import com.wafflestudio.snugo.record.model.Route
 import com.wafflestudio.snugo.record.model.RouteRecord
@@ -19,10 +20,11 @@ import kotlin.jvm.optionals.getOrNull
 class RecordService(
 	private val routeRecordRepository: RouteRecordRepository,
 	private val routeTypeRepository: RouteTypeRepository,
-	private val buildingRepository: BuildingRepository
+	private val buildingRepository: BuildingRepository,
+	private val geoUtil: GeoUtil
 ) {
 	fun getMyRecordList(uid: String, page: Int, size: Int): RecordPageResponse {
-		val pageResult = routeRecordRepository.findByUid(uid, PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
+		val pageResult = routeRecordRepository.findByUserId(uid, PageRequest.of(page, size, Sort.Direction.DESC, "startTime"))
 		return RecordPageResponse(
 			result = pageResult.content,
 			hasNext = pageResult.hasNext(),
@@ -79,15 +81,17 @@ class RecordService(
 		val routeType: RouteType =
 			routeTypeRepository.findByBuildings(buildingList)
 				?: routeTypeRepository.save(
-					RouteType(buildings = buildingList, count = 0)
+					RouteType(buildings = buildingList, count = 0, pathLength = geoUtil.getDistance(buildingList.first().location!!, buildingList.last().location!!), avgTime = 0.0)
 				)
+		val totalTime: Double = route.duration + routeType.count * routeType.avgTime
 		routeType.count += 1
+		routeType.avgTime = totalTime / routeType.count.toDouble()
 		routeTypeRepository.save(routeType)
 		val topOfRouteType = routeRecordRepository.findFirstByRouteTypeOrderByDurationAsc(routeType)
 		routeRecordRepository.save(
 			RouteRecord(
 				nickname = authUserInfo.nickname,
-				uid = authUserInfo.uid,
+				userId = authUserInfo.uid,
 				duration = route.duration,
 				path = route.path.map { it.key.toLong() to it.value }.toMap(),
 				routeType = routeType,

@@ -22,5 +22,4 @@ class RouteTypeController(
 	): RouteTypePageResponse {
 		return routeTypeService.getPopularList(page, size)
 	}
-	
 }
