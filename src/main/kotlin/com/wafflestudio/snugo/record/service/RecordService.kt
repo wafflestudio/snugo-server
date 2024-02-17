@@ -142,6 +142,7 @@ class RecordService(
 
 	fun toRecordDto(record: RouteRecord): RecordDto {
 		return RecordDto(
+			id = record.id,
 			duration = record.duration,
 			userId = record.userId,
 			nickname = record.nickname,
