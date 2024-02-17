@@ -52,7 +52,7 @@ class RecordService(
 		)
 	}
 
-	fun getFastestWithRouteId(routeTypeId: String, page: Int, size: Int): RecordPageResponse {
+	fun getTopWithRouteId(routeTypeId: String, page: Int, size: Int): RecordPageResponse {
 		val routeType = routeTypeRepository.findById(routeTypeId).getOrNull()
 		val pageResult = routeRecordRepository.findByRouteType(
 			routeType ?: throw BusinessException(ErrorType.ROUTE_TYPE_ID_NOT_FOUND),

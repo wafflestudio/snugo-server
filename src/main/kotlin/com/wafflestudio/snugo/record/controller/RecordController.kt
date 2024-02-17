@@ -44,4 +44,23 @@ class RecordController(
 		return recordService.getUpdatedHighScoreList(page, size)
 	}
 
+	@GetMapping("/top/{id}")
+	fun getTopWithRouteId(
+		@AuthenticationPrincipal authUserInfo: AuthUserInfo,
+		@PathVariable id: String,
+		@RequestParam page: Int,
+		@RequestParam size: Int,
+	): RecordPageResponse {
+		return recordService.getTopWithRouteId(id, page, size)
+	}
+
+	@GetMapping("/recent/{id}")
+	fun getRecentWithRouteId(
+		@AuthenticationPrincipal authUserInfo: AuthUserInfo,
+		@PathVariable id: String,
+		@RequestParam page: Int,
+		@RequestParam size: Int,
+	): RecordPageResponse {
+		return recordService.getRecentWithRouteId(id, page, size)
+	}
 }
