@@ -22,4 +22,13 @@ class RouteTypeController(
 	): RouteTypePageResponse {
 		return routeTypeService.getPopularList(page, size)
 	}
+
+	@GetMapping("/recommend")
+	fun getRecommendList(
+		@AuthenticationPrincipal authUserInfo: AuthUserInfo,
+		@RequestParam lat: Double,
+		@RequestParam lng: Double
+	): RouteTypePageResponse {
+		return routeTypeService.getRecommendList(lat, lng)
+	}
 }
