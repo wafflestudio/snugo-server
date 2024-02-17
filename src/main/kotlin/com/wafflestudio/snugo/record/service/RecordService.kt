@@ -5,10 +5,7 @@ import com.wafflestudio.snugo.common.auth.model.AuthUserInfo
 import com.wafflestudio.snugo.common.error.BusinessException
 import com.wafflestudio.snugo.common.error.ErrorType
 import com.wafflestudio.snugo.common.util.GeoUtil
-import com.wafflestudio.snugo.record.model.RecordPageResponse
-import com.wafflestudio.snugo.record.model.Route
-import com.wafflestudio.snugo.record.model.RouteRecord
-import com.wafflestudio.snugo.record.model.RouteType
+import com.wafflestudio.snugo.record.model.*
 import com.wafflestudio.snugo.record.repository.RouteRecordRepository
 import com.wafflestudio.snugo.record.repository.RouteTypeRepository
 import org.springframework.data.domain.PageRequest
@@ -74,6 +71,29 @@ class RecordService(
 			hasNext = pageResult.hasNext(),
 			total_count = pageResult.totalElements
 		)
+	}
+
+	fun getMyRank(id: String, userId: String): RankResponse {
+		val routeType = routeTypeRepository.findById(id).getOrNull()
+		val allRecords = routeRecordRepository.findByRouteTypeOrderByDurationAsc(routeType!!)
+		for (i in 0L..allRecords.size - 1L) {
+			if (allRecords.get(i.toInt()).userId == userId) return RankResponse(myRank = i + 1, total = allRecords.size.toLong())
+		}
+		return RankResponse(0, allRecords.size.toLong())
+	}
+
+	fun getMyRankForAll(userId: String): Double {
+		val allRouteType = routeTypeRepository.findAll()
+		var recordCount = 0
+		var totalPercentage = 0.0
+		allRouteType.forEach {
+			val currentRankResponse = getMyRank(it.id!!, userId)
+			if (currentRankResponse.myRank > 0) {
+				recordCount += 1
+				totalPercentage += (currentRankResponse.myRank - 1).toDouble() / currentRankResponse.total.toDouble()
+			}
+		}
+		return totalPercentage / recordCount.toDouble()
 	}
 
 	fun uploadRecord(authUserInfo: AuthUserInfo, route: Route) {
