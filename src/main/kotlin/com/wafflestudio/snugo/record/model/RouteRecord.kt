@@ -14,4 +14,5 @@ data class RouteRecord(
 	val path: Map<Long, LatLng>, // 타임스탬프 + 위경도
 	val startTime: Long,
 	val duration: Long,
+	var high: Boolean
 )
