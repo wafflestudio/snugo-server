@@ -109,7 +109,17 @@ class RecordService(
 		routeType.avgTime = totalTime / routeType.count.toDouble()
 		routeType.avgPathLength = totalPathLength / routeType.count.toDouble()
 		routeTypeRepository.save(routeType)
-		val topOfRouteType = routeRecordRepository.findFirstByRouteTypeOrderByDurationAsc(routeType)
+		val topsOfRouteType = routeRecordRepository.findAllByHighAndRouteType(true, routeType)
+		var flg = false
+		routeRecordRepository.saveAll(topsOfRouteType.map {
+			if (it.duration > route.duration) {
+				it.high = false
+			} else {
+				flg = true
+			}
+			it
+		})
+		if (topsOfRouteType.isEmpty()) flg = true
 		routeRecordRepository.save(
 			RouteRecord(
 				nickname = authUserInfo.nickname,
@@ -118,18 +128,8 @@ class RecordService(
 				path = route.path.map { it.key.toLong() to it.value }.toMap(),
 				routeType = routeType,
 				startTime = route.startTime,
-				high = if (topOfRouteType == null) {
-					true
-				} else if (topOfRouteType.duration > route.duration) {
-					topOfRouteType.high = false
-					true
-				} else {
-					false
-				}
+				high = flg
 			)
 		)
-		if (topOfRouteType != null) {
-			routeRecordRepository.save(topOfRouteType)
-		}
 	}
 }
