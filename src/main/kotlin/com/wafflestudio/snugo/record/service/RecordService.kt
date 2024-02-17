@@ -79,11 +79,11 @@ class RecordService(
 
 	fun getMyRank(id: String, userId: String): RankResponse {
 		val routeType = routeTypeRepository.findById(id).getOrNull()
-		val allRecords = routeRecordRepository.findAllByRouteTypeId(routeType!!.id!!)
-		for (i in 0L..allRecords.size - 1L) {
-			if (allRecords.get(i.toInt()).userId == userId) return RankResponse(myRank = i + 1, total = allRecords.size.toLong())
+		val allRecords = routeRecordRepository.findAllByRouteTypeId(routeType!!.id!!).sortedBy { it.duration }
+		for (i in 0..allRecords.size - 1) {
+			if (allRecords.get(i.toInt()).userId == userId) return RankResponse(myRank = i + 1, total = allRecords.map { it.userId }.toSet().size)
 		}
-		return RankResponse(0, allRecords.size.toLong())
+		return RankResponse(0, allRecords.size)
 	}
 
 	fun getMyRankForAll(userId: String): Double {
@@ -97,7 +97,7 @@ class RecordService(
 				totalPercentage += (currentRankResponse.myRank - 1).toDouble() / currentRankResponse.total.toDouble()
 			}
 		}
-		return totalPercentage / recordCount.toDouble()
+		return totalPercentage / recordCount.toDouble() * 100.0
 	}
 
 	fun uploadRecord(authUserInfo: AuthUserInfo, route: Route) {
